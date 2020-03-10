@@ -14,7 +14,10 @@ class TempMail
         $endUrl = 'https://tempmailgen.com/api/' . $url . '?' . http_build_query($params);
 
         $response = file_get_contents($endUrl);
-        $response = json_decode($response, true);
+        if (!$response = json_decode($response, true)) {
+            throw new Exception('Can\'t decode json');
+        }
+        
 
         if (!isset($response['success'])) {
             throw new Exception('Problem with connection or email service');
