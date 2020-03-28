@@ -1,7 +1,7 @@
 <?php
 include 'includes/autoload.php';
 
-$email = new TempMail('jack', 'mailsy.top');
+$email = new TempMail('jack');
 try {
     $message = $email->inbox()->getLastEmail();
     var_dump($message);

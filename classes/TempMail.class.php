@@ -3,8 +3,13 @@ class TempMail
 {
     private $username, $domain, $inbox = [];
 
-    public function __construct($username, $domain)
+    public function __construct($username, $domain = null)
     {
+        if (!$domain) {
+            $domain = $this->getDomains();
+            if (!$domain) $domain = ['tempmailgen.com'];
+            $domain = $domain[array_rand($domain)];
+        }
         $this->username = $username;
         $this->domain = $domain;
     }
@@ -86,5 +91,22 @@ class TempMail
             'email_id' => $emails[0]['email_id'],
         ]);
         return $inbox;
+    }
+    public function getDomains()
+    {
+        $list = [];
+        $res = @file_get_contents('https://tempmailgen.com/');
+        if (!$res) return false;
+
+        $res = explode('<option value="', $res);
+        if (count($res) < 2) return false;
+
+        for ($i = 1; $i < count($res); $i++) {
+            $list[] = substr($res[$i], 0, strpos($res[$i], '"'));
+        }
+        $list = array_values(array_unique($list));
+        if (count($list) <= 0) return false;
+
+        return $list;
     }
 }
